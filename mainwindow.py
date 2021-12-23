@@ -314,7 +314,7 @@ class PopulatePswdButttons:
     def CreateButtons(self, x):
         for i in range(x + 1):
             if i != 0:
-                MainButton(G.savedata)
+                MainButton(G.counter)
 
     def ScrollbarCheck(self, x):
         if x > 6:
