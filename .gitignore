@@ -128,5 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+#Save Files
+*.pickle
+
 #Extra files
 logic2.py
