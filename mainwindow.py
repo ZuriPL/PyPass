@@ -285,7 +285,8 @@ def MainButtonAction(element):
         G.element = element
         PasswordEnter()
     else:
-        element.destroy()
+        element2 = ElementsList[element]
+        element2.destroy()
         G.counter = G.counter - 1
         if G.counter == 0:
             k.SorryNoPswds.pack()
