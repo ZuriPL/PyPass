@@ -141,6 +141,7 @@ class GlobalVars:
 
 G = GlobalVars
 ElementsList = ["0"]
+NumbersList = [0]
 
 window.columnconfigure(0, weight=1)
 window.rowconfigure(0, weight=10)
@@ -285,20 +286,57 @@ def MainButtonAction(element):
         G.element = element
         PasswordEnter()
     else:
-        element2 = ElementsList[element]
+        #print("-------------------------------\n-------------------------------\n-------------------------------")
+        #print("!ElementsList")
+        #print(ElementsList)
+        #print("!G.savedata")
+        #print(G.savedata)
+        #print("!Element " + str(element))
+        #print("!Counter " + str(G.counter))
+        #print("!element")
+        #print(element)
+        #print("!NumbersList")
+        #print(NumbersList)
+        #print("!NumbersList.index(element)")
+        #print(NumbersList.index(element))
+        #print("!ElementsList[NumbersList.index(element)]")
+        #print(ElementsList[NumbersList.index(element)])
+        #print("-------------------------------")
+
+        element2 = ElementsList[NumbersList.index(element)]
         element2.destroy()
         G.counter = G.counter - 1
         if G.counter == 0:
             k.SorryNoPswds.pack()
         del G.savedata[str(element)]
-        DeleteButtonMode()
+        del ElementsList[NumbersList.index(element)]
+        del NumbersList[NumbersList.index(element)]
+
+        #print("!ElementsList")
+        #print(ElementsList)
+        #print("!G.savedata")
+        #print(G.savedata)
+        #print("!Element " + str(element))
+        #print("!Counter " + str(G.counter))
+        #print("!element")
+        #print(element)
+        #print("!NumbersList")
+        #print(NumbersList)
+
+        ShowScrollbarWhenNeeded()
         EnterDeleteMode()
+        DeleteButtonMode()
+
+        if k.UseScrollbar == False:
+            PasswordList.yview_scroll(-1, 'pages')
+            scrollbar.forget()
 
 class MainButton:
     def __init__(self, x):
         Element = tk.Button(AnchoredMiddleFrame, text=G.savedata[str(x)]["name"], wraplength=FrameWidth, width=53, height=4, command=lambda: MainButtonAction(x))
         Element.pack()
         ElementsList.append(Element)
+        NumbersList.append(x)
 
 
 FrameWidth = 350
@@ -320,6 +358,8 @@ class PopulatePswdButttons:
     def ScrollbarCheck(self, x):
         if x > 6:
             self.UseScrollbar = True
+        else:
+            self.UseScrollbar = False
 
 k = PopulatePswdButttons()
 
@@ -339,8 +379,9 @@ PasswordList.configure(scrollregion=PasswordList.bbox("all"), yscrollcommand=scr
 
 def ShowScrollbarWhenNeeded():
     k.ScrollbarCheck(G.counter)
-    if k.UseScrollbar == True:
+    if k.UseScrollbar:
         scrollbar.pack(side="right", fill="y")
+
 ShowScrollbarWhenNeeded()
 
 FrameBottom = ttk.Frame(window)
