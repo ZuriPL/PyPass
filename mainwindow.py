@@ -7,13 +7,18 @@ from tkinter.constants import DISABLED, HIDDEN, NORMAL
 from tkinter.messagebox import askyesno, showinfo, showwarning
 from languages import Polski, English
 
-defaultSettings = {"0": {"password": '', "keybind": "Tab", "counter": 0, "rollover": True, "theme": "vista"}}
+defaultSettings = {"0": {"password": '', "keybind": "Tab", "counter": 0, "rollover": True, "theme": "vista", "language": "English"}}
 
 Languages = {"Polski": Polski, "English": English}
 
 class InitialVars:
+    try:
+        with open('data.pickle', 'rb') as handle:
+            languagedata = pickle.load(handle)
+            Language = languagedata["0"]["language"]
+    except FileNotFoundError:
+        Language = "English"
     Pswd = ''
-    Language = "Polski"
 
 I = InitialVars
         
@@ -121,16 +126,16 @@ class GlobalVars:
     name = ''
     login = ''
     password = ''
-    PyPassVersion = '0.5.1 BETA'
+    PyPassVersion = '0.5.3 DEV'
     GlobalPassword = savedata["0"]["password"]
     globalX = 0
-    uid = 1
     counter = savedata["0"]["counter"]
     theme = savedata["0"]["theme"]
     delete = 0
     whattopaste = "login"
     element = ''
     rollover = savedata["0"]["rollover"]
+    language = savedata["0"]["language"]
     FirstPassword = False
     ChangeRolloverVariable = tk.StringVar()
     if rollover == True:
@@ -151,7 +156,7 @@ window.rowconfigure(2, weight=7)
 G.savedata["0"]["password"] = I.Pswd
 
 def HardResetContinue():
-    G.savedata = {"0": {"password": G.GlobalPassword, "keybind": "Tab", "counter": 0, "rollover": True, "theme": "vista"}}
+    G.savedata = {"0": {"password": G.GlobalPassword, "keybind": "Tab", "counter": 0, "rollover": True, "theme": "vista", "language": "English"}}
     G.counter = 0
     G.theme = "vista"
     G.rollover = True
@@ -238,21 +243,21 @@ def PasswordEnter():
     FrameX.columnconfigure(2, weight=2, minsize=200)
     FrameX.rowconfigure([0, 1, 2], weight=1)
 
-    G.whattopaste = 'login'
+    G.whattopaste = 'Login'
 
     def changewhatToPaste(what):
         G.whattopaste = what
-        if what == "login" or what == "password":
+        if what == Languages[I.Language]["Str1"] or what == Languages[I.Language]["Str3"]:
             PasteLabel["text"] = Languages[I.Language]["Str13"] + what
         else:
             PasteLabel["text"] = what
 
     def TypeOutThePassword(*args):
-        if G.whattopaste == 'login':
+        if G.whattopaste == Languages[I.Language]["Str1"]:
             keyboard.write(G.savedata[str(G.element)]["login"])
             if G.rollover:
                 changewhatToPaste(Languages[I.Language]["Str3"]) 
-        elif G.whattopaste == 'password':
+        elif G.whattopaste == Languages[I.Language]["Str3"]:
             keyboard.write(G.savedata[str(G.element)]["password"])
             if G.rollover:
                 changewhatToPaste(Languages[I.Language]["Str12"])
@@ -263,8 +268,8 @@ def PasswordEnter():
     ttk.Label(FrameX, text=Languages[I.Language]["Str49"] + G.whichButton).grid(column=0, row=0, sticky="nsew", padx=10, pady=5, columnspan=2)
     ttk.Label(FrameX, text=Languages[I.Language]["Str28"] + str(G.rollover)).grid(column=2, row=0, sticky="nsew", padx=10, pady=5)
 
-    ttk.Button(FrameX, text="Login", command=lambda: changewhatToPaste("login")).grid(column=0, row=1, sticky="nsew", padx=10, pady=5)
-    ttk.Button(FrameX, text="Password", command=lambda: changewhatToPaste("password")).grid(column=1, row=1, sticky="nsew", padx=10, pady=5)
+    ttk.Button(FrameX, text="Login", command=lambda: changewhatToPaste(Languages[I.Language]["Str1"])).grid(column=0, row=1, sticky="nsew", padx=10, pady=5)
+    ttk.Button(FrameX, text="Password", command=lambda: changewhatToPaste(Languages[I.Language]["Str3"])).grid(column=1, row=1, sticky="nsew", padx=10, pady=5)
 
     PasteLabel = ttk.Label(FrameX, text=Languages[I.Language]["Str13"] + G.whattopaste) #Str13
     PasteLabel.grid(column=2, row=1, sticky="nsew", padx=10, pady=5)
@@ -286,25 +291,25 @@ def MainButtonAction(element):
         G.element = element
         PasswordEnter()
     else:
-        #print("-------------------------------\n-------------------------------\n-------------------------------")
-        #print("!ElementsList")
-        #print(ElementsList)
-        #print("!G.savedata")
-        #print(G.savedata)
-        #print("!Element " + str(element))
-        #print("!Counter " + str(G.counter))
-        #print("!element")
-        #print(element)
-        #print("!NumbersList")
-        #print(NumbersList)
-        #print("!NumbersList.index(element)")
-        #print(NumbersList.index(element))
-        #print("!ElementsList[NumbersList.index(element)]")
-        #print(ElementsList[NumbersList.index(element)])
-        #print("-------------------------------")
+        print("-------------------------------\n-------------------------------\n-------------------------------")
+        print("!ElementsList")
+        print(ElementsList)
+        print("!G.savedata")
+        print(G.savedata)
+        print("!Element " + str(element))
+        print("!Counter " + str(G.counter))
+        print("!element")
+        print(element)
+        print("!NumbersList")
+        print(NumbersList)
+        print("!NumbersList.index(element)")
+        print(NumbersList.index(element))
+        print("!ElementsList[NumbersList.index(element)]")
+        print(ElementsList[NumbersList.index(element)])
+        print("-------------------------------")
 
         element2 = ElementsList[NumbersList.index(element)]
-        element2.destroy()
+        element2.pack_forget()
         G.counter = G.counter - 1
         if G.counter == 0:
             k.SorryNoPswds.pack()
@@ -312,24 +317,20 @@ def MainButtonAction(element):
         del ElementsList[NumbersList.index(element)]
         del NumbersList[NumbersList.index(element)]
 
-        #print("!ElementsList")
-        #print(ElementsList)
-        #print("!G.savedata")
-        #print(G.savedata)
-        #print("!Element " + str(element))
-        #print("!Counter " + str(G.counter))
-        #print("!element")
-        #print(element)
-        #print("!NumbersList")
-        #print(NumbersList)
+        print("!ElementsList")
+        print(ElementsList)
+        print("!G.savedata")
+        print(G.savedata)
+        print("!Element " + str(element))
+        print("!Counter " + str(G.counter))
+        print("!element")
+        print(element)
+        print("!NumbersList")
+        print(NumbersList)
 
         ShowScrollbarWhenNeeded()
         EnterDeleteMode()
         DeleteButtonMode()
-
-        if k.UseScrollbar == False:
-            PasswordList.yview_scroll(-1, 'pages')
-            scrollbar.forget()
 
 class MainButton:
     def __init__(self, x):
@@ -337,6 +338,7 @@ class MainButton:
         Element.pack()
         ElementsList.append(Element)
         NumbersList.append(x)
+        
 
 
 FrameWidth = 350
@@ -381,6 +383,8 @@ def ShowScrollbarWhenNeeded():
     k.ScrollbarCheck(G.counter)
     if k.UseScrollbar:
         scrollbar.pack(side="right", fill="y")
+    else:
+        scrollbar.pack_forget()
 
 ShowScrollbarWhenNeeded()
 
@@ -502,8 +506,8 @@ def SettingsWindow():
         LanguageList.append(i)
 
     def ChangeLanguage(*args):
-        I.Language = LanguageOption.get()
-        showinfo(message=Languages[I.Language]["Str52"], title=Languages[I.Language]["Str53"])
+        G.language = LanguageOption.get()
+        showinfo(message=Languages[G.language]["Str52"], title=Languages[I.Language]["Str53"])
 
     ttk.Label(SettingsFrameOne, text=Languages[I.Language]["Str51"]).grid(column=0, row=1, sticky="w", padx=10, pady=5) 
     ttk.OptionMenu(SettingsFrameOne, LanguageOption, I.Language, *LanguageList, command=ChangeLanguage).grid(column=1, row=1, sticky="e", padx=10, pady=5)
@@ -660,12 +664,13 @@ def SettingsWindow():
     PathText["state"] = DISABLED
     
 meanwhile_dict = {}
-        
+     
 def closeEvent():
     G.savedata["0"]["counter"] = G.counter
     G.savedata["0"]["theme"] = G.theme
     G.savedata["0"]["rollover"] = G.rollover
     G.savedata["0"]["password"] = G.GlobalPassword
+    G.savedata["0"]["language"] = G.language
     if I.Pswd != '':
         G.savedata["0"]["password"] = I.Pswd
     for i in range(len(G.savedata)):
