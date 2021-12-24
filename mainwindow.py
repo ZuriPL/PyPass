@@ -659,6 +659,7 @@ def SettingsWindow():
     PathText["relief"] = 'flat'
     PathText["state"] = DISABLED
     
+meanwhile_dict = {}
         
 def closeEvent():
     G.savedata["0"]["counter"] = G.counter
