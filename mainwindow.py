@@ -667,6 +667,9 @@ def closeEvent():
     G.savedata["0"]["password"] = G.GlobalPassword
     if I.Pswd != '':
         G.savedata["0"]["password"] = I.Pswd
+    for i in range(len(G.savedata)):
+        meanwhile_dict[str(i)] = G.savedata[list(G.savedata.keys())[i]]
+    G.savedata = meanwhile_dict
     #print(G.counter)
     with open('data.pickle', 'wb') as handle:
         pickle.dump(G.savedata, handle)
