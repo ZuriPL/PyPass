@@ -1,5 +1,5 @@
 Polski = {
-    "Str1": "Zaloguj się",
+    "Str1": "Login",
     "Str2": "Nieprawidłowe hasło",
     "Str3": "Hasło",
     "Str4": "Stwórz hasło",
@@ -56,7 +56,7 @@ Polski = {
 }
 
 English = {
-    "Str1": "Log into Pypass",
+    "Str1": "Login",
     "Str2": "Incorrect password",
     "Str3": "Password",
     "Str4": "Create a password",
