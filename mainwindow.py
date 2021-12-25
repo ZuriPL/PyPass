@@ -1,5 +1,5 @@
 import tkinter as tk
-import re, pickle, keyboard, string, random, sys, locale
+import re, pickle, keyboard, string, random, sys, locale, os
 from tkinter import ttk
 from tkinter.constants import DISABLED, NORMAL
 from os import path
@@ -126,12 +126,8 @@ window.resizable(0, 0)
 
 class GlobalVars:
     whichButton = savedata["0"]["keybind"]
-    name = ''
-    login = ''
-    password = ''
     PyPassVersion = '0.6.1 DEV'
     GlobalPassword = savedata["0"]["password"]
-    globalX = 0
     counter = savedata["0"]["counter"]
     theme = savedata["0"]["theme"]
     delete = 0
@@ -715,9 +711,10 @@ def SettingsWindow():
     ttk.Label(SettingsFrameFour, text=G.PyPassVersion).grid(row=1, sticky="nse", padx=10, pady=5, column=1)
 
     ttk.Label(SettingsFrameFour, text=Languages[I.Language]["Str48"]).grid(row=2, sticky="new", padx=10, pady=5, column=0) 
-    PathText = tk.Text(SettingsFrameFour, height=5, width=18, relief="flat", state=DISABLED) 
+    PathText = tk.Text(SettingsFrameFour, height=5, width=18, relief="flat") 
     PathText.grid(row=2, sticky="nsew", padx=10, pady=5, column=1)
     PathText.insert('1.0', path.abspath('data.pickle'))
+    PathText["state"] = DISABLED
     
 meanwhile_dict = {}
      
