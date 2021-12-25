@@ -1,15 +1,17 @@
-from os import path
-import sys
 import tkinter as tk
-import re, pickle, keyboard
+import re, pickle, keyboard, string, random, sys, locale
 from tkinter import ttk
-from tkinter.constants import DISABLED, HIDDEN, NORMAL
+from tkinter.constants import DISABLED, NORMAL
+from os import path
 from tkinter.messagebox import askyesno, showinfo, showwarning
-from languages import Polski, English
+from languages import *
+
+
 
 defaultSettings = {"0": {"password": '', "keybind": "Tab", "counter": 0, "rollover": True, "theme": "vista", "language": "English"}}
-
 Languages = {"Polski": Polski, "English": English}
+
+
 
 class InitialVars:
     try:
@@ -17,7 +19,10 @@ class InitialVars:
             languagedata = pickle.load(handle)
             Language = languagedata["0"]["language"]
     except FileNotFoundError:
-        Language = "English"
+        if locale.getdefaultlocale()[0] == 'pl_PL':
+            Language = "Polski"
+        else:
+            Language = "English"
     Pswd = ''
 
 I = InitialVars
@@ -58,7 +63,6 @@ def LoginWindow(pswd):
 
 
 def CreatePasswordWindow():
-
     loginW = tk.Tk()
     
     loginW.geometry("350x100")
@@ -68,7 +72,6 @@ def CreatePasswordWindow():
     loginW.protocol("WM_DELETE_WINDOW", sys.exit)
 
         
-
     FrameX = tk.Frame(loginW, height=100, width=320)
     FrameX.pack(expand=True, fill="both")
 
@@ -126,7 +129,7 @@ class GlobalVars:
     name = ''
     login = ''
     password = ''
-    PyPassVersion = '0.5.3.1 DEV'
+    PyPassVersion = '0.6 BETA'
     GlobalPassword = savedata["0"]["password"]
     globalX = 0
     counter = savedata["0"]["counter"]
@@ -134,8 +137,7 @@ class GlobalVars:
     delete = 0
     whattopaste = "login"
     element = ''
-    rollover = savedata["0"]["rollover"]
-    language = savedata["0"]["language"]
+    rollover = savedata["0"]["rollover"]    
     FirstPassword = False
     ChangeRolloverVariable = tk.StringVar()
     if rollover == True:
@@ -143,6 +145,10 @@ class GlobalVars:
     else:
         ChangeRolloverVariable.set('0')
     savedata = savedata
+    isAdvanced = False
+    RandomString = ""
+    current_value = tk.IntVar()
+    Use2FAVariable = tk.StringVar()
 
 G = GlobalVars
 ElementsList = ["0"]
@@ -153,7 +159,9 @@ window.rowconfigure(0, weight=10)
 window.rowconfigure(1, weight=30)
 window.rowconfigure(2, weight=7)
 
-G.savedata["0"]["password"] = I.Pswd
+
+if I.Pswd != '':
+        G.savedata["0"]["password"] = I.Pswd
 
 def HardResetContinue():
     G.savedata = {"0": {"password": G.GlobalPassword, "keybind": "Tab", "counter": 0, "rollover": True, "theme": "vista", "language": "English"}}
@@ -166,7 +174,7 @@ def HardResetContinue():
 def AskForPassword2():
     child2 = tk.Toplevel()
     child2.geometry("350x70")
-    child2.title("Ustaw nowe hasło") #!
+    child2.title(Languages[I.Language]["Str55"]) 
     child2.resizable(0, 0)
     child2.grab_set()
     child2.focus()
@@ -205,10 +213,8 @@ FrameTop.grid(row=0, column=0, sticky="nsew")
 TopLabel = ttk.Label(FrameTop, text=Languages[I.Language]["Str43"])
 TopLabel.place(relx=0.5, rely=0.5, anchor="center")
 
-FrameMiddle = ttk.Frame(window)
+FrameMiddle = ttk.Frame(window, relief="sunken", borderwidth=5)
 FrameMiddle.grid(column=0, row=1, sticky="ns")
-FrameMiddle["relief"] = "sunken"
-FrameMiddle["borderwidth"] = 5
 
 
 
@@ -271,7 +277,7 @@ def PasswordEnter():
     ttk.Button(FrameX, text="Login", command=lambda: changewhatToPaste(Languages[I.Language]["Str1"])).grid(column=0, row=1, sticky="nsew", padx=10, pady=5)
     ttk.Button(FrameX, text="Password", command=lambda: changewhatToPaste(Languages[I.Language]["Str3"])).grid(column=1, row=1, sticky="nsew", padx=10, pady=5)
 
-    PasteLabel = ttk.Label(FrameX, text=Languages[I.Language]["Str13"] + G.whattopaste) #Str13
+    PasteLabel = ttk.Label(FrameX, text=Languages[I.Language]["Str13"] + G.whattopaste) 
     PasteLabel.grid(column=2, row=1, sticky="nsew", padx=10, pady=5)
 
     def Exit():
@@ -426,19 +432,17 @@ def EnterDeleteMode():
 
 def AddNewEntryWindow():
     child = tk.Toplevel()
-    child.geometry("350x140")
+    child.geometry("350x139")
     child.resizable(0, 0)
     child.title(Languages[I.Language]["Str21"]) 
     child.transient()
     child.focus()
     child.grab_set()
+    G.current_value.set(24)
 
     def PassAndClose(name, login, pswd):
         if name != '' and login != '' and pswd != '':
             child.destroy()
-            G.name = name
-            G.login = login
-            G.password = pswd
             if k.SorryNoPswds.winfo_exists() == True:
                 k.SorryNoPswds.pack_forget()
             CreateButton(name, login, pswd)
@@ -448,9 +452,10 @@ def AddNewEntryWindow():
         else:
             showwarning(message=Languages[I.Language]["Str22"]) 
 
+    EntryTKStringVar = tk.StringVar()
     child.columnconfigure(0, weight=1)
     child.columnconfigure(1, weight=4)
-    child.rowconfigure([0, 1, 2, 3], weight=1)
+    child.rowconfigure([0, 1, 2, 3, 4], weight=1)
     ttk.Label(child, text=Languages[I.Language]["Str23"]).grid(column=0, row=0, sticky="e", padx=5) 
     ttk.Label(child, text="Login").grid(column=0, row=1, sticky="e", padx=5) 
     ttk.Label(child, text=Languages[I.Language]["Str3"]).grid(column=0, row=2, sticky="e", padx=5) 
@@ -458,9 +463,62 @@ def AddNewEntryWindow():
     NameEnter.grid(column=1, row=0, sticky="nsew", padx=10, pady=5)
     LoginEnter = ttk.Entry(child)
     LoginEnter.grid(column=1, row=1, sticky="nsew", padx=10, pady=5)
-    PswdEnter = ttk.Entry(child)
+    PswdEnter = ttk.Entry(child, textvariable=EntryTKStringVar)
     PswdEnter.grid(column=1, row=2, sticky="nsew", padx=10, pady=5)
     ttk.Button(child, text=Languages[I.Language]["Str24"], command=lambda: PassAndClose(NameEnter.get(), LoginEnter.get(), PswdEnter.get())).grid(column=1, row=3, sticky="e", padx=10, pady=5) 
+
+    def SliderValueCallback(*args):
+        SliderValue["text"] = G.current_value.get()
+
+    def GenerateRandomString(*args):
+        for i in range(G.current_value.get()):
+            G.RandomString = G.RandomString + random.choice(string.ascii_letters + string.digits + "#@!$%^&*()-_=+")
+        EntryTKStringVar.set(G.RandomString)
+        G.RandomString = ''
+
+
+    AdvFrame = ttk.Frame(child)
+    AdvFrame.columnconfigure(0, weight=1)
+    AdvFrame.columnconfigure(1, minsize=253)
+    AdvFrame.rowconfigure([0, 1, 2], weight=1)
+    AdvFrame.rowconfigure(3, minsize=33)
+    ttk.Label(AdvFrame, text="Generate a random password:").grid(row=0, column=0, columnspan=2, sticky="nsw", padx=10, pady=5)
+    SliderFrame = ttk.Frame(AdvFrame)
+    SliderFrame.grid(column=1, row=1, sticky="nsew", padx=10, pady=5)
+    ttk.Button(AdvFrame, text="Generate", command=GenerateRandomString).grid(column=0, row=1, sticky="nsew", padx=10, pady=5)
+    slider = ttk.Scale(SliderFrame, from_=8, to=32, variable=G.current_value, command=SliderValueCallback)
+    SliderValue = ttk.Label(SliderFrame, text=G.current_value.get())
+    SliderValue.pack(side="left", ipadx=10)
+    slider.pack(side="right", expand=True, fill="x")
+
+    def ToggleAdvancedMode():
+        if G.isAdvanced:
+            child.geometry("350x139")
+            AdvFrame.grid_forget()
+            G.isAdvanced = False
+        else:
+            child.geometry("350x275")
+            AdvFrame.grid(row=4, column=0, columnspan=2, sticky="nsew", pady=5, padx=5)
+            G.isAdvanced = True
+
+    ttk.Button(child, text="Advanced", command=ToggleAdvancedMode).grid(row=3, column=1, padx=10, pady=5)
+
+
+    ttk.Label(AdvFrame, text="Configure 2FA: (doesn't work yet)").grid(row=2, column=0, columnspan=2, sticky="nsw", padx=10, pady=5) #!
+    
+    def Use2FAChange():
+        if G.Use2FAVariable.get() == '1':
+            MFAEntry["state"] = NORMAL
+        else:
+            MFAEntry["state"] = DISABLED
+            MFAEntry["textvariable"] = tk.StringVar()
+
+    MFACheck = ttk.Checkbutton(AdvFrame, text="Use 2FA", onvalue=True, offvalue=False, variable=G.Use2FAVariable, command=Use2FAChange)
+    MFACheck.grid(column=0, row=3, sticky="nsw", padx=10, pady=5)
+    MFAEntry = ttk.Entry(AdvFrame, state=DISABLED)
+    MFAEntry.grid(column=1, row=3, sticky="nsew", padx=10, pady=5)
+
+
 
 
 ButtonPressed = tk.StringVar()
@@ -506,8 +564,8 @@ def SettingsWindow():
         LanguageList.append(i)
 
     def ChangeLanguage(*args):
-        G.language = LanguageOption.get()
-        showinfo(message=Languages[G.language]["Str52"], title=Languages[I.Language]["Str53"])
+        I.Language = LanguageOption.get()
+        showinfo(message=Languages[I.Language]["Str52"], title=Languages[I.Language]["Str53"])
 
     ttk.Label(SettingsFrameOne, text=Languages[I.Language]["Str51"]).grid(column=0, row=1, sticky="w", padx=10, pady=5) 
     ttk.OptionMenu(SettingsFrameOne, LanguageOption, I.Language, *LanguageList, command=ChangeLanguage).grid(column=1, row=1, sticky="e", padx=10, pady=5)
@@ -601,7 +659,7 @@ def SettingsWindow():
         if answer:
             AskForANewPassword()
 
-    ChangePasswordButton = ttk.Button(SettingsFrameThree, text=Languages[I.Language]["Str35"], command=lambda: ChangePasswordWarning()) #Str35
+    ChangePasswordButton = ttk.Button(SettingsFrameThree, text=Languages[I.Language]["Str35"], command=lambda: ChangePasswordWarning())
     ChangePasswordButton.grid(column=0, row=1, sticky="nsew", padx=10, pady=5)
     
     def AskForPassword():
@@ -643,7 +701,7 @@ def SettingsWindow():
         if answer:
             AskForPassword()
 
-    ExtractFilesButton = ttk.Button(SettingsFrameThree, text=Languages[I.Language]["Str39"], command=lambda: ExtractPasswords()) #Str39
+    ExtractFilesButton = ttk.Button(SettingsFrameThree, text=Languages[I.Language]["Str39"], command=lambda: ExtractPasswords())
     ExtractFilesButton.grid(column=0, row=2, sticky="nsew", padx=10, pady=5)
 
     SettingsFrameFour = ttk.LabelFrame(child, text=Languages[I.Language]["Str50"])
@@ -657,11 +715,9 @@ def SettingsWindow():
     ttk.Label(SettingsFrameFour, text=G.PyPassVersion).grid(row=1, sticky="nse", padx=10, pady=5, column=1)
 
     ttk.Label(SettingsFrameFour, text=Languages[I.Language]["Str48"]).grid(row=2, sticky="new", padx=10, pady=5, column=0) 
-    PathText = tk.Text(SettingsFrameFour, height=5, width=18) 
+    PathText = tk.Text(SettingsFrameFour, height=5, width=18, relief="flat", state=DISABLED) 
     PathText.grid(row=2, sticky="nsew", padx=10, pady=5, column=1)
     PathText.insert('1.0', path.abspath('data.pickle'))
-    PathText["relief"] = 'flat'
-    PathText["state"] = DISABLED
     
 meanwhile_dict = {}
      
@@ -670,9 +726,7 @@ def closeEvent():
     G.savedata["0"]["theme"] = G.theme
     G.savedata["0"]["rollover"] = G.rollover
     G.savedata["0"]["password"] = G.GlobalPassword
-    G.savedata["0"]["language"] = G.language
-    if I.Pswd != '':
-        G.savedata["0"]["password"] = I.Pswd
+    G.savedata["0"]["language"] = I.Language
     for i in range(len(G.savedata)):
         meanwhile_dict[str(i)] = G.savedata[list(G.savedata.keys())[i]]
     G.savedata = meanwhile_dict
@@ -684,7 +738,7 @@ def closeEvent():
 themeset = ttk.Style()
 themeset.theme_use(G.theme)
 
-window.protocol("WM_DELETE_WINDOW", lambda: closeEvent())
+window.protocol("WM_DELETE_WINDOW", closeEvent)
 
 
 
