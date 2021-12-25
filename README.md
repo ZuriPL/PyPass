@@ -11,12 +11,12 @@ PyPass is a GUI password manager written in Python, using tkinter
 
 1. 
  - Replace current "Delete" button with an "Edit" button, which will bring a screen to edit the login and password
- - Add an ability to generate a random password while creating an entry
+ - Add an ability to generate a random password while creating an entry (DONE in 0.6)
  - [OPTIONAL] Create a CLI installer scripts
 
 2. 
  - Add encryption
- - When language not set, make the program load system language instead of defaulting to English
+ - When language not set, make the program load system language instead of defaulting to English (DONE in 0.6)
  - Create an icon
 
 3. 
@@ -25,4 +25,4 @@ PyPass is a GUI password manager written in Python, using tkinter
  - Fix theming
 
 4.
- - Add an option to sync passwors between devices using a cloud sharing service like MEGA
+ - Add an option to sync passwords between devices using a cloud sharing service like MEGA
