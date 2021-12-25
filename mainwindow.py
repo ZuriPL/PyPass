@@ -126,7 +126,7 @@ class GlobalVars:
     name = ''
     login = ''
     password = ''
-    PyPassVersion = '0.5.3 DEV'
+    PyPassVersion = '0.5.3.1 DEV'
     GlobalPassword = savedata["0"]["password"]
     globalX = 0
     counter = savedata["0"]["counter"]
@@ -473,7 +473,7 @@ else:
 
 def SettingsWindow():
     child = tk.Toplevel()
-    child.geometry("350x450")
+    child.geometry("350x490")
     child.resizable(0, 1)
     child.title(Languages[I.Language]["Str17"]) 
     child.transient()
