@@ -4,7 +4,7 @@ PyPass is a GUI password manager written in Python, using tkinter
 
 # About repo
 
-The master branch has all the newest code. If you want stable source code, you can find it under the Releases section.
+The master branch is the DEV branch, and has all the newest code. If you want stable source code, you can find it under the Releases section.
 
 If you want to contribute:
  - Don't clean up the code. Please. It's a waste of time
