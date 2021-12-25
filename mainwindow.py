@@ -129,7 +129,7 @@ class GlobalVars:
     name = ''
     login = ''
     password = ''
-    PyPassVersion = '0.6 BETA'
+    PyPassVersion = '0.6.1 DEV'
     GlobalPassword = savedata["0"]["password"]
     globalX = 0
     counter = savedata["0"]["counter"]

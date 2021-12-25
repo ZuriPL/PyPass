@@ -11,7 +11,6 @@ If you want to contribute:
  - I will be the most grateful for double-checking translations and adding new ones
 
 # Known Errors:
-
  - Deleting entries in different order than from last to first might cause errors (should be fixed by now)
  - There can be issues regarding loading data when some entries were deleted in the previous session (should be fixed by now)
 
