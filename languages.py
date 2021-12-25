@@ -52,7 +52,8 @@ Polski = {
     "Str51": "Wybierz język",
     "Str52": "Zresetuj program, aby zastosować wszystkie zmiany",
     "Str53": "Język został zmieniony",
-    "Str54": "Zmiana Hasła"
+    "Str54": "Zmiana Hasła",
+    "Str55": "Ustaw nowe hasło",
 }
 
 English = {
@@ -109,5 +110,6 @@ English = {
     "Str51": "Choose your language",
     "Str52": "Restart the program for all changes to take effect",
     "Str53": "Language has been changed",
-    "Str54": "Changing the password"
+    "Str54": "Changing the password",
+    "Str55": "Set a new password",
 }
