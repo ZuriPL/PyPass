@@ -18,6 +18,7 @@ PyPass is a GUI password manager written in Python, using tkinter
  - Create an icon
 
 3. 
+ - Auto-open a site for 2FA if specified
  - Fix theming
 
 4.
