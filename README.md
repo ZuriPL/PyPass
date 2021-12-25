@@ -4,8 +4,8 @@ PyPass is a GUI password manager written in Python, using tkinter
 
 # Known Errors:
 
- - Deleting entries in different order than from last to first might cause errors
- - There can be issues regarding the scrollbar and loading data when some entries were deleted in the previous session
+ - Deleting entries in different order than from last to first might cause errors (should be fixed by now)
+ - There can be issues regarding loading data when some entries were deleted in the previous session (should be fixed by now)
 
 # Milestones:
 
