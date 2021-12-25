@@ -19,15 +19,15 @@ If you want to contribute:
 1. 
  - Replace current "Delete" button with an "Edit" button, which will bring a screen to edit the login and password
  - Add an ability to generate a random password while creating an entry (DONE in 0.6)
- - [OPTIONAL] Create a CLI installer scripts
+ - When language not set, make the program load system language instead of defaulting to English (DONE in 0.6)
 
 2. 
+ - Auto-open a site for 2FA if specified
  - Add encryption
- - When language not set, make the program load system language instead of defaulting to English (DONE in 0.6)
- - Create an icon
+ - [OPTIONAL] Create a CLI installer scripts
 
 3. 
- - Auto-open a site for 2FA if specified
+ - Create an icon
  - Support for more languages
  - Fix theming
 
