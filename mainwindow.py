@@ -178,7 +178,6 @@ def AskForPassword2():
 
     def SetTheNewPassword2(x, *args):
         G.GlobalPassword = x
-        HardResetContinue()
 
     FrameX = tk.Frame(child2, height=100, width=320)
     FrameX.pack(expand=True, fill="both")
@@ -200,8 +199,7 @@ def HardReset():
         answer2 = askyesno(title=Languages[I.Language]["Str46"], message=Languages[I.Language]["Str47"])
         if answer2 == False:
             AskForPassword2()
-        else:
-            HardResetContinue()
+        HardResetContinue()
 
 FrameTop = ttk.Frame(window, width=350)
 FrameTop.grid(row=0, column=0, sticky="nsew")
