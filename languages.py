@@ -54,6 +54,14 @@ Polski = {
     "Str53": "Język został zmieniony",
     "Str54": "Zmiana Hasła",
     "Str55": "Ustaw nowe hasło",
+    "Str56": "Edytuj",
+    "Str57": "Nowy login",
+    "Str58": "Nowa nazwa",
+    "Str59": "Zaawansowane",
+    "Str60": "Generuj",
+    "Str61": "Wygeneruj losowe hasło",
+    "Str62": "Włącz weryfikację dwu-etapową",
+    
 }
 
 English = {
@@ -112,4 +120,11 @@ English = {
     "Str53": "Language has been changed",
     "Str54": "Changing the password",
     "Str55": "Set a new password",
+    "Str56": "Edit",
+    "Str57": "New login",
+    "Str58": "New name",
+    "Str59": "Advanced",
+    "Str60": "Generate",
+    "Str61": "Generate a random password",
+    "Str62": "Enable two-factor authentication",
 }

@@ -1,7 +1,7 @@
 import tkinter as tk
-import re, pickle, keyboard, string, random, sys, locale, os
+import re, pickle, keyboard, string, random, sys, locale
 from tkinter import ttk
-from tkinter.constants import DISABLED, NORMAL
+from tkinter.constants import *
 from os import path
 from tkinter.messagebox import askyesno, showinfo, showwarning
 from languages import *
@@ -285,30 +285,53 @@ def PasswordEnter():
     keyboard.add_hotkey(G.whichButton, TypeOutThePassword, suppress=True)
 
 
+def EditWindow(element):
+    child = tk.Toplevel()
+    child.geometry("350x139")
+    child.resizable(0, 0)
+    child.transient()
+    child.focus()
+    child.grab_set()
+    G.current_value.set(24)
+    EntryTKStringVar = tk.StringVar()
 
-def MainButtonAction(element):
-    if G.delete == 0:
-        G.element = element
-        PasswordEnter()
-    else:
-        #print("-------------------------------\n-------------------------------\n-------------------------------")
-        #print("!ElementsList")
-        #print(ElementsList)
-        #print("!G.savedata")
+    def testexit():
+        G.isAdvanced = False
         #print(G.savedata)
-        #print("!Element " + str(element))
-        #print("!Counter " + str(G.counter))
-        #print("!element")
-        #print(element)
-        #print("!NumbersList")
-        #print(NumbersList)
-        #print("!NumbersList.index(element)")
-        #print(NumbersList.index(element))
-        #print("!ElementsList[NumbersList.index(element)]")
-        #print(ElementsList[NumbersList.index(element)])
-        #print("-------------------------------")
+        child.destroy()
+    
+    child.protocol("WM_DELETE_WINDOW", testexit)
 
-        element2 = ElementsList[NumbersList.index(element)]
+    child.columnconfigure(0, weight=1)
+    child.columnconfigure(1, weight=4)
+    child.rowconfigure([0, 1, 2, 3, 4], weight=1)
+    element2 = ElementsList[NumbersList.index(element)]
+    
+
+    def UpdateEntry(name, login, pswd, element):
+        if name != '':
+            G.savedata[str(NumbersList.index(element))]["name"] = name
+            element2["text"] = name
+        if login != '':
+            G.savedata[str(NumbersList.index(element))]["login"] = login
+        if pswd != '':
+            G.savedata[str(NumbersList.index(element))]["password"] = pswd
+        child.destroy()
+
+    EntryTKStringVar = tk.StringVar()
+
+    ttk.Label(child, text=Languages[I.Language]["Str58"]).grid(column=0, row=0, sticky="e", padx=5)
+    Blank = tk.StringVar()
+    Name2Enter = ttk.Entry(child, textvariable=Blank)
+    Name2Enter.grid(column=1, row=0, sticky="nsew", padx=10, pady=5)
+    ttk.Label(child, text=Languages[I.Language]["Str57"]).grid(column=0, row=1, sticky="e", padx=5)
+    Login2Enter = ttk.Entry(child, textvariable=Blank)
+    Login2Enter.grid(column=1, row=1, sticky="nsew", padx=10, pady=5)
+    ttk.Label(child, text=Languages[I.Language]["Str33"]).grid(column=0, row=2, sticky="e", padx=5)
+    Pswd2Enter = ttk.Entry(child, textvariable=EntryTKStringVar)
+    Pswd2Enter.grid(column=1, row=2, sticky="nsew", padx=10, pady=5)
+
+    def DeleteButton():
         element2.pack_forget()
         G.counter = G.counter - 1
         if G.counter == 0:
@@ -316,21 +339,78 @@ def MainButtonAction(element):
         del G.savedata[str(element)]
         del ElementsList[NumbersList.index(element)]
         del NumbersList[NumbersList.index(element)]
+        testexit()
 
-        #print("!ElementsList")
-        #print(ElementsList)
-        #print("!G.savedata")
-        #print(G.savedata)
-        #print("!Element " + str(element))
-        #print("!Counter " + str(G.counter))
-        #print("!element")
-        #print(element)
-        #print("!NumbersList")
-        #print(NumbersList)
 
+    def GenerateRandomString(*args):
+        for i in range(G.current_value.get()):
+            G.RandomString = G.RandomString + random.choice(string.ascii_letters + string.digits + "#@!$%^&*()-_=+")
+        EntryTKStringVar.set(G.RandomString)
+        G.RandomString = ''
+
+    ButtonFrame = ttk.Frame(child)
+    ButtonFrame.grid(column=0, columnspan=2, row=3)
+    ButtonFrame.columnconfigure([2, 3], weight=1)
+    ButtonFrame.columnconfigure(1, minsize=80)
+    ButtonFrame.columnconfigure(0, minsize=90)
+    ttk.Button(ButtonFrame, text=Languages[I.Language]["Str18"], command=DeleteButton).grid(column=2, row=0, sticky="w", padx=0, pady=5)
+    ttk.Button(ButtonFrame, text=Languages[I.Language]["Str24"], command=lambda: UpdateEntry(Name2Enter.get(), Login2Enter.get(), Pswd2Enter.get(), element)).grid(column=3, row=0, sticky="w", padx=10, pady=5)
+
+    def SliderValueCallback(*args):
+        SliderValue["text"] = G.current_value.get()
+
+    AdvFrame = ttk.Frame(child)
+    AdvFrame.columnconfigure(0, weight=1)
+    AdvFrame.columnconfigure(1, minsize=253)
+    AdvFrame.rowconfigure([0, 1, 2], weight=1)
+    AdvFrame.rowconfigure(3, minsize=33)
+    ttk.Label(AdvFrame, text=Languages[I.Language]["Str61"]).grid(row=0, column=0, columnspan=2, sticky="nsw", padx=10, pady=5)
+    SliderFrame = ttk.Frame(AdvFrame)
+    SliderFrame.grid(column=1, row=1, sticky="nsew", padx=10, pady=5)
+    ttk.Button(AdvFrame, text=Languages[I.Language]["Str60"], command=GenerateRandomString).grid(column=0, row=1, sticky="nsew", padx=10, pady=5)
+    slider = ttk.Scale(SliderFrame, from_=8, to=32, variable=G.current_value, command=SliderValueCallback)
+    SliderValue = ttk.Label(SliderFrame, text=G.current_value.get())
+    SliderValue.pack(side="left", ipadx=10)
+    slider.pack(side="right", expand=True, fill="x")
+
+    
+
+    def ToggleAdvancedMode():
+        if G.isAdvanced:
+            child.geometry("350x139")
+            AdvFrame.grid_forget()
+            G.isAdvanced = False
+        else:
+            child.geometry("350x275")
+            AdvFrame.grid(row=4, column=0, columnspan=2, sticky="nsew", pady=5, padx=5)
+            G.isAdvanced = True
+
+    ttk.Button(ButtonFrame, text=Languages[I.Language]["Str59"], command=ToggleAdvancedMode).grid(row=0, column=0, padx=10, pady=5, sticky="e")
+
+    ttk.Label(AdvFrame, text=Languages[I.Language]["Str62"]).grid(row=2, column=0, columnspan=2, sticky="nsw", padx=10, pady=5) #!
+    
+    def Use2FAChange():
+        if G.Use2FAVariable.get() == '1':
+            MFAEntry["state"] = NORMAL
+        else:
+            MFAEntry["state"] = DISABLED
+            MFAEntry["textvariable"] = tk.StringVar()
+
+    MFACheck = ttk.Checkbutton(AdvFrame, text="2FA: ", onvalue=True, offvalue=False, variable=G.Use2FAVariable, command=Use2FAChange)
+    MFACheck.grid(column=0, row=3, sticky="nsw", padx=10, pady=5)
+    MFAEntry = ttk.Entry(AdvFrame, state=DISABLED)
+    MFAEntry.grid(column=1, row=3, sticky="nsew", padx=10, pady=5)
+
+
+def MainButtonAction(element):
+    if G.delete == 0:
+        G.element = element
+        PasswordEnter()
+    else:
         ShowScrollbarWhenNeeded()
         EnterDeleteMode()
         DeleteButtonMode()
+        EditWindow(element)
 
 class MainButton:
     def __init__(self, x):
@@ -398,7 +478,7 @@ AddButton = ttk.Button(FrameBottom, text=Languages[I.Language]["Str16"], width=1
 AddButton.grid(row=0, column=0, padx=40)
 SettingsButton = ttk.Button(FrameBottom, text=Languages[I.Language]["Str17"], width=10, command=lambda: SettingsWindow()) 
 SettingsButton.grid(row=0, column=1, padx=40)
-DeleteButton = ttk.Button(FrameBottom, text=Languages[I.Language]["Str18"], width=10, command=lambda: EnterDeleteMode()) 
+DeleteButton = ttk.Button(FrameBottom, text=Languages[I.Language]["Str56"], width=10, command=lambda: EnterDeleteMode()) 
 DeleteButton.grid(row=0, column=2, padx=40)
 
 def DeleteButtonMode():
@@ -421,6 +501,7 @@ def EnterDeleteMode():
         AddButton["state"] = NORMAL
         SettingsButton["state"] = NORMAL
         TopLabel["text"] = Languages[I.Language]["Str43"]
+        
     
 
 
@@ -464,7 +545,7 @@ def AddNewEntryWindow():
     def SliderValueCallback(*args):
         SliderValue["text"] = G.current_value.get()
 
-    def GenerateRandomString(*args):
+    def GenerateRandomString(*args): #!1
         for i in range(G.current_value.get()):
             G.RandomString = G.RandomString + random.choice(string.ascii_letters + string.digits + "#@!$%^&*()-_=+")
         EntryTKStringVar.set(G.RandomString)
@@ -476,10 +557,10 @@ def AddNewEntryWindow():
     AdvFrame.columnconfigure(1, minsize=253)
     AdvFrame.rowconfigure([0, 1, 2], weight=1)
     AdvFrame.rowconfigure(3, minsize=33)
-    ttk.Label(AdvFrame, text="Generate a random password:").grid(row=0, column=0, columnspan=2, sticky="nsw", padx=10, pady=5)
+    ttk.Label(AdvFrame, text=Languages[I.Language]["Str61"]).grid(row=0, column=0, columnspan=2, sticky="nsw", padx=10, pady=5)
     SliderFrame = ttk.Frame(AdvFrame)
     SliderFrame.grid(column=1, row=1, sticky="nsew", padx=10, pady=5)
-    ttk.Button(AdvFrame, text="Generate", command=GenerateRandomString).grid(column=0, row=1, sticky="nsew", padx=10, pady=5)
+    ttk.Button(AdvFrame, text=Languages[I.Language]["Str60"], command=GenerateRandomString).grid(column=0, row=1, sticky="nsew", padx=10, pady=5)
     slider = ttk.Scale(SliderFrame, from_=8, to=32, variable=G.current_value, command=SliderValueCallback)
     SliderValue = ttk.Label(SliderFrame, text=G.current_value.get())
     SliderValue.pack(side="left", ipadx=10)
@@ -495,10 +576,10 @@ def AddNewEntryWindow():
             AdvFrame.grid(row=4, column=0, columnspan=2, sticky="nsew", pady=5, padx=5)
             G.isAdvanced = True
 
-    ttk.Button(child, text="Advanced", command=ToggleAdvancedMode).grid(row=3, column=1, padx=10, pady=5)
+    ttk.Button(child, text=Languages[I.Language]["Str59"], command=ToggleAdvancedMode).grid(row=3, column=1, padx=10, pady=5)
 
 
-    ttk.Label(AdvFrame, text="Configure 2FA: (doesn't work yet)").grid(row=2, column=0, columnspan=2, sticky="nsw", padx=10, pady=5) #!
+    ttk.Label(AdvFrame, text=Languages[I.Language]["Str62"]).grid(row=2, column=0, columnspan=2, sticky="nsw", padx=10, pady=5) #!
     
     def Use2FAChange():
         if G.Use2FAVariable.get() == '1':
@@ -507,7 +588,7 @@ def AddNewEntryWindow():
             MFAEntry["state"] = DISABLED
             MFAEntry["textvariable"] = tk.StringVar()
 
-    MFACheck = ttk.Checkbutton(AdvFrame, text="Use 2FA", onvalue=True, offvalue=False, variable=G.Use2FAVariable, command=Use2FAChange)
+    MFACheck = ttk.Checkbutton(AdvFrame, text="2FA:", onvalue=True, offvalue=False, variable=G.Use2FAVariable, command=Use2FAChange)
     MFACheck.grid(column=0, row=3, sticky="nsw", padx=10, pady=5)
     MFAEntry = ttk.Entry(AdvFrame, state=DISABLED)
     MFAEntry.grid(column=1, row=3, sticky="nsew", padx=10, pady=5)
