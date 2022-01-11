@@ -126,7 +126,7 @@ window.resizable(0, 0)
 
 class GlobalVars:
     whichButton = savedata["0"]["keybind"]
-    PyPassVersion = '0.6.1 DEV'
+    PyPassVersion = '0.6.2 DEV'
     GlobalPassword = savedata["0"]["password"]
     counter = savedata["0"]["counter"]
     theme = savedata["0"]["theme"]
